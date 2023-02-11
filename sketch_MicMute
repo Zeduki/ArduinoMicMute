@@ -1,0 +1,57 @@
+#include <Keyboard.h>
+
+const int buttonPin = 2;  // The pin number of the button
+const int ledPin = 13;    // The pin number of the LED
+int buttonState = 0;      // The current state of the button
+bool micMuted = false;    // The current mute state of the microphone
+
+void setup() {
+  // Begin the Keyboard library
+  Keyboard.begin();
+  
+  // Set the button and LED pins as inputs/outputs
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // Read the state of the button
+  buttonState = digitalRead(buttonPin);
+  
+  // If the button is pressed
+  if (buttonState == LOW) {
+    // If the microphone is not muted, mute it
+    if (!micMuted) {
+      // Press and release the mute microphone key combination
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_SHIFT);
+      Keyboard.press(KEY_M);
+      Keyboard.release(KEY_M);
+      Keyboard.release(KEY_LEFT_SHIFT);
+      Keyboard.release(KEY_LEFT_CTRL);
+      
+      // Update the mute state
+      micMuted = true;
+      digitalWrite(ledPin, HIGH);
+    }
+    // If the microphone is muted, unmute it
+    else {
+      // Press and release the mute microphone key combination
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_SHIFT);
+      Keyboard.press(KEY_M);
+      Keyboard.release(KEY_M);
+      Keyboard.release(KEY_LEFT_SHIFT);
+      Keyboard.release(KEY_LEFT_CTRL);
+      
+      // Update the mute state
+      micMuted = false;
+      digitalWrite(ledPin, LOW);
+    }
+    
+    // Wait until the button is released
+    while (digitalRead(buttonPin) == LOW) {
+      // Do nothing
+    }
+  }
+}
